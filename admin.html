@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة الإدارة</title>
+  <style>
+    body { background: #111; color: #fff; font-family: Arial; padding: 20px; text-align: center; }
+    input, select { padding: 10px; margin: 10px; width: 80%; }
+    button { padding: 10px 20px; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h1>إضافة قناة جديدة</h1>
+  <select id="categorySelect"></select><br>
+  <input type="text" id="channelName" placeholder="اسم القناة"><br>
+  <input type="text" id="channelUrl" placeholder="رابط القناة (m3u8)"><br>
+  <button onclick="addChannel()">إضافة</button>
+
+  <script src="data.js"></script>
+  <script>
+    // حفظ القنوات في التخزين المحلي
+    function saveLocal() {
+      localStorage.setItem('iptv_data', JSON.stringify(categories));
+    }
+
+    // تحميل من التخزين المحلي لو فيه بيانات
+    const localData = localStorage.getItem('iptv_data');
+    if (localData) {
+      window.categories = JSON.parse(localData);
+    }
+
+    const select = document.getElementById('categorySelect');
+    categories.forEach((cat, index) => {
+      const opt = document.createElement('option');
+      opt.value = index;
+      opt.textContent = cat.name;
+      select.appendChild(opt);
+    });
+
+    function addChannel() {
+      const index = select.value;
+      const name = document.getElementById('channelName').value;
+      const url = document.getElementById('channelUrl').value;
+
+      if (!name || !url) {
+        alert('الرجاء تعبئة كل الحقول');
+        return;
+      }
+
+      categories[index].channels.push({ name, url });
+      saveLocal();
+      alert('تمت إضافة القناة!');
+      document.getElementById('channelName').value = '';
+      document.getElementById('channelUrl').value = '';
+    }
+  </script>
+</body>
+</html>
